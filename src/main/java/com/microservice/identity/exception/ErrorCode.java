@@ -13,6 +13,7 @@ public enum ErrorCode {
     // 1. Hệ thống & Chưa xác định
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(1001, "Uncategorized error", HttpStatus.BAD_REQUEST),
+    TOKEN_CREATION_FAILED(1006, "Failed to create security token", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // 2. Xác thực & Phân quyền (Security)
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
