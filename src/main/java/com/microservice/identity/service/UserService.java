@@ -6,7 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.microservice.identity.dto.request.UserCreationRequest;
 import com.microservice.identity.dto.request.UserUpdateRequest;
+import com.microservice.identity.dto.response.UserResponse;
 import com.microservice.identity.entity.User;
+import com.microservice.identity.exception.AppException;
+import com.microservice.identity.exception.ErrorCode;
+import com.microservice.identity.mapper.UserMapper;
 import com.microservice.identity.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -18,33 +22,37 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
     UserRepository userRepository;
+    UserMapper userMapper;
 
-    public User createUser(UserCreationRequest request) {
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-        user.setDob(request.getDob());
-        return userRepository.save(user);
+    public UserResponse createUser(UserCreationRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+        User user = userMapper.toUser(request);
+        user = userRepository.save(user);
+
+        return userMapper.toUserResponse(user);
     }
 
-    public User updateUser(String userId, UserUpdateRequest request) throws Exception {
-        User user = userRepository.findById(userId).orElseThrow(() -> new Exception("User not existed!"));
-        user.setPassword(request.getPassword());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-        user.setDob(request.getDob());
-        return userRepository.save(user);
+    public UserResponse getUser(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return userMapper.toUserResponse(user);
     }
 
-    public void deleteUser(String userId) {
+    public UserResponse updateUser(String userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        userMapper.updateUser(user, request);
+        user = userRepository.save(user);
+        return userMapper.toUserResponse(user);
+    }
+
+    public String deleteUser(String userId) {
         userRepository.deleteById(userId);
+        return "User has been deleted!";
     }
 
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getUsers() {
+        List<User> users = userRepository.findAll();
+        return userMapper.toListUserResponse(users);
     }
 }
