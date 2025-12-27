@@ -1,25 +1,19 @@
 package com.microservice.identity.dto.response;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    String username;
-    String firstName;
-    String lastName;
-    String email;
-    LocalDate dob;
-    Set<String> roles;
+public class RoleResponse {
+    String name;
+    String description;
+    Set<String> permissions;
 }

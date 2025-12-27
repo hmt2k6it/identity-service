@@ -45,7 +45,8 @@ public class AuthenticationService {
     String SIGNER_KEY;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        User user = userRepository.findByUsername(request.getUsername());
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
@@ -56,7 +57,7 @@ public class AuthenticationService {
     }
 
     public IntrospectResponse introspect(IntrospectRequest request) {
-        var token = request.getToken();
+        String token = request.getToken();
         try {
             SignedJWT signedJWT = SignedJWT.parse(token);
             JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());

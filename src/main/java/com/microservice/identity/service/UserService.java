@@ -1,5 +1,6 @@
 package com.microservice.identity.service;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,10 +9,12 @@ import org.springframework.stereotype.Service;
 import com.microservice.identity.dto.request.UserCreationRequest;
 import com.microservice.identity.dto.request.UserUpdateRequest;
 import com.microservice.identity.dto.response.UserResponse;
+import com.microservice.identity.entity.Role;
 import com.microservice.identity.entity.User;
 import com.microservice.identity.exception.AppException;
 import com.microservice.identity.exception.ErrorCode;
 import com.microservice.identity.mapper.UserMapper;
+import com.microservice.identity.repository.RoleRepository;
 import com.microservice.identity.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -25,6 +28,7 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -32,9 +36,9 @@ public class UserService {
         }
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user = userRepository.save(user);
-
-        return userMapper.toUserResponse(user);
+        List<Role> roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public UserResponse getUser(String userId) {
