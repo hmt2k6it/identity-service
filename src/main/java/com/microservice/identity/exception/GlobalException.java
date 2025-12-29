@@ -1,14 +1,18 @@
 package com.microservice.identity.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.microservice.identity.dto.response.ApiResponse;
 
+import jakarta.validation.ConstraintViolation;
+
 @ControllerAdvice
 public class GlobalException {
+
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse<?>> handlingException(Exception exception) {
         ApiResponse<String> apiResonse = new ApiResponse<>();
@@ -27,18 +31,39 @@ public class GlobalException {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse<?>> handlingValidation(MethodArgumentNotValidException exception) {
-        String enumKey = exception.getFieldError().getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+        var fieldError = exception.getFieldError();
+        String enumKey = fieldError.getDefaultMessage();
 
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+        Object minValue = null;
         try {
             errorCode = ErrorCode.valueOf(enumKey);
         } catch (IllegalArgumentException e) {
         }
 
+        var constraintViolation = fieldError.unwrap(ConstraintViolation.class);
+        var attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+        minValue = attributes.get("min");
+
+        String message = errorCode.getMessage();
+        if (minValue != null) {
+            message = message.replace("{min}", String.valueOf(minValue));
+        }
+
         ApiResponse<String> apiResponse = new ApiResponse<>();
         apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
+        apiResponse.setMessage(message);
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse<?>> handlingAccessDeniedException(AccessDeniedException exception) {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+        return ResponseEntity.status(errorCode.getStatusCode())
+                .body(ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build());
     }
 }

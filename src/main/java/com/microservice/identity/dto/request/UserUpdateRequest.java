@@ -1,7 +1,8 @@
 package com.microservice.identity.dto.request;
 
 import java.time.LocalDate;
-import java.util.Set;
+
+import com.microservice.identity.validator.DobConstraint;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
@@ -21,6 +22,6 @@ public class UserUpdateRequest {
     String lastName;
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "INVALID_EMAIL")
     String email;
+    @DobConstraint(min = 18)
     LocalDate dob;
-    Set<String> roles;
 }

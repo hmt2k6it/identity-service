@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,13 +38,15 @@ public class UserController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.name")
     @GetMapping("/{userId}")
-    public ApiResponse<UserResponse> getMethodName(@PathVariable("userId") String userId) {
+    public ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUser(userId))
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.name")
     @PutMapping("/{userId}")
     public ApiResponse<UserResponse> updateUser(@PathVariable("userId") String userId,
             @RequestBody UserUpdateRequest request) {
@@ -52,6 +55,7 @@ public class UserController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN') or (#userId == authentication.name)")
     @DeleteMapping("/{userId}")
     public ApiResponse<String> deleteUser(@PathVariable("userId") String userId) {
         return ApiResponse.<String>builder()
@@ -59,6 +63,7 @@ public class UserController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     public ApiResponse<List<UserResponse>> getUsers() {
         return ApiResponse.<List<UserResponse>>builder()

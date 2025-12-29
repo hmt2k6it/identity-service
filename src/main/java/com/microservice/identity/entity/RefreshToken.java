@@ -1,29 +1,24 @@
 package com.microservice.identity.entity;
 
-import java.util.Set;
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
 @Entity
-@Setter
 @Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
+public class RefreshToken {
     @Id
-    String name;
-    String description;
-    @ManyToMany
-    Set<Permission> permissions;
+    String id;
+    Date expiryTime;
+    String userId;
 }

@@ -11,5 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class AuthenticationResponse {
     @Builder.Default
     boolean authenticated = false;
-    String token;
+    String accessToken;
+    String refreshToken;
 }

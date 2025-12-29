@@ -13,7 +13,8 @@ public enum ErrorCode {
     // 1. Hệ thống & Chưa xác định
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(1001, "Uncategorized error", HttpStatus.BAD_REQUEST),
-    TOKEN_CREATION_FAILED(1006, "Failed to create security token", HttpStatus.INTERNAL_SERVER_ERROR),
+    TOKEN_CREATION_FAILED(1010, "Failed to create security token", HttpStatus.INTERNAL_SERVER_ERROR),
+    USER_WARNING(1012, "Hacker", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // 2. Xác thực & Phân quyền (Security)
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
@@ -33,6 +34,7 @@ public enum ErrorCode {
 
     // Cập nhật thông báo cho Email Regex
     INVALID_EMAIL(1005, "Email format is invalid (e.g., user@example.com)", HttpStatus.BAD_REQUEST),
+    INVALID_DOB(1011, "Your age must be at least {min}!", HttpStatus.BAD_REQUEST),
 
     // 4. Truy vấn dữ liệu (Entity)
     USER_NOT_EXISTED(1008, "User not existed", HttpStatus.NOT_FOUND),

@@ -4,6 +4,21 @@
             "name": "jwt.signer-key",
             "type": "java.lang.String",
             "description": "A description for 'jwt.signer-key'"
+        },
+        {
+            "name": "app.security.default-role",
+            "type": "java.lang.String",
+            "description": "A description for 'app.security.default-role'"
+        },
+        {
+            "name": "jwt.valid-duration",
+            "type": "java.lang.String",
+            "description": "A description for 'jwt.valid-duration'"
+        },
+        {
+            "name": "jwt.refreshable-duration",
+            "type": "java.lang.String",
+            "description": "A description for 'jwt.refreshable-duration'"
         }
     ]
 }

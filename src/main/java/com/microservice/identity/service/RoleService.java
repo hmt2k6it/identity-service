@@ -3,6 +3,7 @@ package com.microservice.identity.service;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.microservice.identity.dto.request.RoleCreationRequest;
 import com.microservice.identity.dto.request.RoleUpdateRequest;
@@ -36,7 +37,11 @@ public class RoleService {
     }
 
     public String deleteRole(String name) {
-        roleRepository.deleteById(name);
+        try {
+            roleRepository.deleteById(name);
+        } catch (DataIntegrityViolationException e) {
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
         return "Role has been deleted!";
     }
 
