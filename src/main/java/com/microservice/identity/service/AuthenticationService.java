@@ -167,7 +167,7 @@ public class AuthenticationService {
         return stringJoiner.toString();
     }
 
-    public SignedJWT verify(String token) throws ParseException, JOSEException {
+    private SignedJWT verify(String token) throws ParseException, JOSEException {
         SignedJWT signedJWT = SignedJWT.parse(token);
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         boolean isValid = signedJWT.verify(verifier);
@@ -178,7 +178,7 @@ public class AuthenticationService {
         return signedJWT;
     }
 
-    public void saveRefreshToken(String token) {
+    private void saveRefreshToken(String token) {
         try {
             SignedJWT signedJWT = SignedJWT.parse(token);
             String userId = signedJWT.getJWTClaimsSet().getSubject();
