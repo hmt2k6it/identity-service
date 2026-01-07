@@ -35,4 +35,6 @@ public class User {
     Set<Role> roles;
     @Builder.Default
     boolean status = true;
+    @Builder.Default
+    boolean deleted = false;
 }

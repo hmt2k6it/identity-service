@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
+    String userId;
     String username;
     String email;
     Set<String> roles;

@@ -52,7 +52,7 @@ public class ApplicationInitConfig {
 
             initRole(roleRepository, "USER", "Standard User", null);
 
-            if (!userRepository.existsByUsername(ADMIN_USER_NAME)) {
+            if (!userRepository.existsByUsernameAndDeletedFalse(ADMIN_USER_NAME)) {
                 Role adminRole = roleRepository.findById("ADMIN")
                         .orElseThrow(() -> new RuntimeException("Role ADMIN not found"));
 

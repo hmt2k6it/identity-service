@@ -38,6 +38,13 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/myinfo")
+    public ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
+                .build();
+    }
+
     @PreAuthorize("(hasRole('ADMIN') and hasAuthority('USER:READ')) or #userId == authentication.name")
     @GetMapping("/{userId}")
     public ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
@@ -68,13 +75,6 @@ public class UserController {
     public ApiResponse<List<UserResponse>> getUsers() {
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
-                .build();
-    }
-
-    @GetMapping("/myinfo")
-    public ApiResponse<UserResponse> getMyInfo() {
-        return ApiResponse.<UserResponse>builder()
-                .result(userService.getMyInfo())
                 .build();
     }
 

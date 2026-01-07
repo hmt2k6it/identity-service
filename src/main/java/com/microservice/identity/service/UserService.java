@@ -25,10 +25,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserService {
     @NonFinal
     @Value("${app.security.default-role}")
@@ -39,7 +41,7 @@ public class UserService {
     RoleRepository roleRepository;
 
     public UserResponse createUser(UserCreationRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByUsernameAndDeletedFalse(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         User user = userMapper.toUser(request);
@@ -53,19 +55,24 @@ public class UserService {
     }
 
     public UserResponse getUser(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByUserIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toUserResponse(user);
     }
 
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
-        User user = userRepository.findById(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        log.info(name);
+        System.out.println("DEBUG UserID from Token: " + name);
+        User user = userRepository.findByUserIdAndDeletedFalse(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toUserResponse(user);
     }
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByUserIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userMapper.updateUser(user, request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -73,8 +80,13 @@ public class UserService {
     }
 
     public String deleteUser(String userId) {
-        userRepository.deleteById(userId);
-        return "User has been deleted!";
+        // Sửa findByIdAndDeletedFalse -> findByUserIdAndDeletedFalse
+        User user = userRepository.findByUserIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        user.setDeleted(true);
+        userRepository.save(user);
+        return "User has been deleted successfully!";
     }
 
     @PreAuthorize("hasAuthority('USER:LIST')")
