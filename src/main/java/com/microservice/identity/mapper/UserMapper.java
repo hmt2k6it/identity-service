@@ -18,6 +18,7 @@ import com.microservice.identity.entity.User;
 public interface UserMapper {
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "status", ignore = true)
     User toUser(UserCreationRequest request);
 
     UserResponse toUserResponse(User user);
@@ -31,6 +32,7 @@ public interface UserMapper {
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "status", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 
     List<UserResponse> toListUserResponse(List<User> users);

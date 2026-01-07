@@ -1,6 +1,5 @@
 package com.microservice.identity.entity;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -31,10 +30,9 @@ public class User {
     @Column(unique = true)
     String username;
     String password;
-    String firstName;
-    String lastName;
     String email;
-    LocalDate dob;
     @ManyToMany
     Set<Role> roles;
+    @Builder.Default
+    boolean status = true;
 }

@@ -52,7 +52,6 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    @PreAuthorize("hasAuthority('GET_USER')")
     public UserResponse getUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toUserResponse(user);
@@ -65,7 +64,6 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    @PreAuthorize("hasAuthority('UPDATE_USER')")
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userMapper.updateUser(user, request);
@@ -74,13 +72,12 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    @PreAuthorize("hasAuthority('DELETE_USER')")
     public String deleteUser(String userId) {
         userRepository.deleteById(userId);
         return "User has been deleted!";
     }
 
-    @PreAuthorize("hasAuthority('GET_ALLUSER')")
+    @PreAuthorize("hasAuthority('USER:LIST')")
     public List<UserResponse> getUsers() {
         List<User> users = userRepository.findAll();
         return userMapper.toListUserResponse(users);

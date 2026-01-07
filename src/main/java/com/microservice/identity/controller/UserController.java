@@ -38,7 +38,7 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.name")
+    @PreAuthorize("(hasRole('ADMIN') and hasAuthority('USER:READ')) or #userId == authentication.name")
     @GetMapping("/{userId}")
     public ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
         return ApiResponse.<UserResponse>builder()
@@ -46,7 +46,7 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.name")
+    @PreAuthorize("(hasRole('ADMIN') and hasAuthority('USER:UPDATE')) or #userId == authentication.name")
     @PutMapping("/{userId}")
     public ApiResponse<UserResponse> updateUser(@PathVariable("userId") String userId,
             @RequestBody UserUpdateRequest request) {
@@ -55,7 +55,7 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or (#userId == authentication.name)")
+    @PreAuthorize("(hasRole('ADMIN') and hasAuthority('USER:DELETE')) or #userId == authentication.name")
     @DeleteMapping("/{userId}")
     public ApiResponse<String> deleteUser(@PathVariable("userId") String userId) {
         return ApiResponse.<String>builder()
@@ -63,11 +63,18 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('USER:LIST')")
     @GetMapping()
     public ApiResponse<List<UserResponse>> getUsers() {
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
+                .build();
+    }
+
+    @GetMapping("/myinfo")
+    public ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
                 .build();
     }
 
