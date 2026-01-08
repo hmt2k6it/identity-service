@@ -19,6 +19,7 @@ public interface UserMapper {
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     User toUser(UserCreationRequest request);
 
     UserResponse toUserResponse(User user);
@@ -33,6 +34,7 @@ public interface UserMapper {
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 
     List<UserResponse> toListUserResponse(List<User> users);
