@@ -56,7 +56,7 @@ public class UserController {
     @PreAuthorize("(hasRole('ADMIN') and hasAuthority('USER:UPDATE')) or #userId == authentication.name")
     @PutMapping("/{userId}")
     public ApiResponse<UserResponse> updateUser(@PathVariable("userId") String userId,
-            @RequestBody UserUpdateRequest request) {
+            @RequestBody @Valid UserUpdateRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.updateUser(userId, request))
                 .build();

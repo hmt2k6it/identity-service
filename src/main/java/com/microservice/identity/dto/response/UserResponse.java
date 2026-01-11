@@ -20,4 +20,5 @@ public class UserResponse {
     String email;
     Set<String> roles;
     boolean status;
+    boolean deleted;
 }

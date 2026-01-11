@@ -80,7 +80,6 @@ public class UserService {
     }
 
     public String deleteUser(String userId) {
-        // Sửa findByIdAndDeletedFalse -> findByUserIdAndDeletedFalse
         User user = userRepository.findByUserIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
